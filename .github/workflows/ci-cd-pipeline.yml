@@ -1,40 +1,41 @@
 name: Deploy
 
 on:
-    push:
-     branches: ["master"]
-    workflow_dispatch:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
 
 permissions:
-    contents: read
-    pages: write
-    id-token: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-    group: "pages"
-    cancel-in-progress: false
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-    deploy:
-     environment:
-       name: github-pages
-       url: ${{ steps.deployment.outputs.page_url }}
-     runs-on: ubuntu-latest
-     steps:
-       - name: Checkout
-         uses: actions/checkout@v4
-       - name: Setup Pages
-         uses: actions/configure-pages@v4
-       - name: Run shell script to merge files
-         run: bash ./myscript.sh
-       - name: Isolate files of interest
-       - run: |
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+	    - name Check out master
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Run merge script
+        run: bash ./build.sh
+      - name: Isolate files of interest
+        run: |
           mkdir public
           cp -R index.html
-       - name: Upload artifact
-         uses: actions/upload-pages-artifact@v3
-         with:
-           path: '.'
-       - name: Deploy to GitHub Pages
-         id: deployment
-         uses: actions/deploy-pages@v4
+          cp -R style/
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v4
+        name: "public"
+        path: 'public/**'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
