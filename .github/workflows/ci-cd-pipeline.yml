@@ -31,8 +31,8 @@ jobs:
               uses: actions/configure-pages@v4
 
             - name: Run shell script to merge files
-              run: bash ./build.sh
-
+              run: bash build.sh
+                         
             - name: Isolate files of interest
               run: |
                   mkdir public
